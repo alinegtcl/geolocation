@@ -16,6 +16,10 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
+    companion object {
+        const val LOCATION_CODE_REQUEST = 1
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -37,7 +41,8 @@ class MainActivity : AppCompatActivity() {
         task.addOnSuccessListener {
             if (it != null) {
                 setupVisibility()
-                binding.contentMainCoordinators.textMainLatitudeNumber.text = it.latitude.toString()
+                binding.contentMainCoordinators.textMainLatitudeNumber.text =
+                    it.latitude.toString()
                 binding.contentMainCoordinators.textMainLongitudeNumer.text =
                     it.longitude.toString()
             }
@@ -48,15 +53,12 @@ class MainActivity : AppCompatActivity() {
         if (ActivityCompat.checkSelfPermission(
                 this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
-                101
+                LOCATION_CODE_REQUEST
             )
             return
         }
