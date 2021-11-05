@@ -7,14 +7,18 @@ import android.view.View
 import androidx.core.app.ActivityCompat
 import com.alinecruz.geolocation.databinding.ActivityMainBinding
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.tasks.CancellationTokenSource
 
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+
+    private var cancellationTokenSource = CancellationTokenSource()
 
     companion object {
         const val LOCATION_CODE_REQUEST = 1
@@ -34,11 +38,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun fetchLocation() {
 
-        val task = fusedLocationProviderClient.lastLocation
+        val currentLocationTask = fusedLocationProviderClient.getCurrentLocation(
+            PRIORITY_HIGH_ACCURACY,
+            cancellationTokenSource.token
+        )
 
         checkLocationPermission()
 
-        task.addOnSuccessListener {
+        currentLocationTask.addOnSuccessListener {
             if (it != null) {
                 setupVisibility()
                 binding.contentMainCoordinators.textMainLatitudeNumber.text =
